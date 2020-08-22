@@ -8,6 +8,7 @@ import (
 	"image"
 	_ "image/png"
 	"runtime"
+	"strings"
 	"syscall/js"
 
 	"github.com/hajimehoshi/ebiten"
@@ -23,13 +24,23 @@ func init() {
 	textBoxImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
 }
 
+var isSafari bool
+
+func init() {
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent
+	ua := js.Global().Get("navigator").Get("userAgent").String()
+	isSafari = strings.Contains(ua, "Safari/") && !strings.Contains(ua, "Chrome/") && !strings.Contains(ua, "Chromium/")
+}
+
 type TextBox struct {
-	v      js.Value
-	bounds image.Rectangle
+	v                       js.Value
+	bounds                  image.Rectangle
+	justAfterCompositionEnd bool
 
 	onenter func(*TextBox)
 
-	keydown js.Func
+	keydown        js.Func
+	compositionend js.Func
 }
 
 func NewTextBox(bounds image.Rectangle) *TextBox {
@@ -50,6 +61,15 @@ func NewTextBox(bounds image.Rectangle) *TextBox {
 		if t.onenter == nil {
 			return nil
 		}
+
+		// On Chrome, compositionend is fired after keydown is fired.
+		// On Safari, keydown is fired after compositionend is fired.
+		v := t.justAfterCompositionEnd
+		t.justAfterCompositionEnd = false
+		if v && isSafari {
+			return nil
+		}
+
 		e := args[0]
 		if e.Get("isComposing").Bool() {
 			return nil
@@ -62,6 +82,12 @@ func NewTextBox(bounds image.Rectangle) *TextBox {
 	})
 	input.Call("addEventListener", "keydown", t.keydown)
 
+	t.compositionend = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		t.justAfterCompositionEnd = true
+		return nil
+	})
+	input.Call("addEventListener", "compositionend", t.compositionend)
+
 	return t
 }
 
@@ -72,6 +98,7 @@ func (t *TextBox) Dispose() {
 	body.Call("removeChild", t.v)
 	t.v = js.Value{}
 	t.keydown.Release()
+	t.compositionend.Release()
 }
 
 func (t *TextBox) setBounds(bounds image.Rectangle) {
