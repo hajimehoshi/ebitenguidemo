@@ -62,8 +62,8 @@ func NewTextBox(bounds image.Rectangle) *TextBox {
 			return nil
 		}
 
-		// On Chrome, compositionend is fired after keydown is fired.
 		// On Safari, keydown is fired after compositionend is fired.
+		// On the other browsers, compositionend is fired after keydown is fired.
 		v := t.justAfterCompositionEnd
 		t.justAfterCompositionEnd = false
 		if v && isSafari {
