@@ -8,6 +8,8 @@ cd ebitenguidemo
 wasmserve .
 ```
 
+and open `http://localhost:8080` on your browser.
+
 ## Resources
 
 Pixel UI pack
