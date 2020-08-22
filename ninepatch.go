@@ -21,7 +21,6 @@ func drawNinePatch(dst *ebiten.Image, src *ebiten.Image, rect image.Rectangle) {
 			dy := rect.Min.Y
 			dsx := 1.0
 			dsy := 1.0
-			op := &ebiten.DrawImageOptions{}
 
 			switch i {
 			case 0:
@@ -53,6 +52,7 @@ func drawNinePatch(dst *ebiten.Image, src *ebiten.Image, rect image.Rectangle) {
 				dy += rect.Dy() - partSizeCorner
 			}
 
+			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Scale(dsx, dsy)
 			op.GeoM.Translate(float64(dx), float64(dy))
 			dst.DrawImage(src.SubImage(sr).(*ebiten.Image), op)
