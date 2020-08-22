@@ -1,6 +1,6 @@
 # Ebiten GUI Demo
 
-A GUI demonstration in [Ebiten](https://ebiten.org).
+A GUI demonstration in [Ebiten](https://ebiten.org). This is work in progress.
 
 ```
 git clone https://github.com/hajimehoshi/ebitenguidemo
