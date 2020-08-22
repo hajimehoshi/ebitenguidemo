@@ -11,7 +11,12 @@ import (
 
 type Game struct {
 	textBox *TextBox
-	items   []*Label
+	items   []*Item
+}
+
+type Item struct {
+	checkbox *Checkbox
+	label    *Label
 }
 
 func (g *Game) Update(_ *ebiten.Image) error {
@@ -22,7 +27,11 @@ func (g *Game) Update(_ *ebiten.Image) error {
 			if v == "" {
 				return
 			}
-			g.items = append(g.items, NewLabel(16+4, 16+24*(2+len(g.items)), v))
+			x, y := 16+4, 16+24*(2+len(g.items))
+			g.items = append(g.items, &Item{
+				checkbox: NewCheckbox(x, y+4),
+				label:    NewLabel(x+24, y, v),
+			})
 			t.SetValue("")
 		})
 	}
@@ -32,6 +41,9 @@ func (g *Game) Update(_ *ebiten.Image) error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{0xc0, 0xc0, 0xc0, 0xff})
 	g.textBox.Draw(screen)
+	for _, i := range g.items {
+		i.checkbox.Draw(screen)
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
