@@ -5,6 +5,7 @@ package main
 import (
 	"image"
 	"image/color"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten"
 )
@@ -23,7 +24,7 @@ func (g *Game) Update(_ *ebiten.Image) error {
 	if g.textBox == nil {
 		g.textBox = NewTextBox(image.Rect(16, 16, 16*21, 16+24))
 		g.textBox.SetOnEnter(func(t *TextBox) {
-			v := t.Value()
+			v := strings.TrimSpace(t.Value())
 			if v == "" {
 				return
 			}
