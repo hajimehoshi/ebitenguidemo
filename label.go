@@ -28,6 +28,7 @@ func newLabel(x, y int, text string) *label {
 	span.Get("style").Set("position", "absolute")
 	span.Get("style").Set("left", fmt.Sprintf("%dpx", x))
 	span.Get("style").Set("top", fmt.Sprintf("%dpx", y))
+	span.Get("style").Set("color", l.color)
 	span.Set("textContent", text)
 
 	body := js.Global().Get("document").Get("body")
