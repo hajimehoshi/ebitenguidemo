@@ -13,13 +13,19 @@ import (
 type Game struct {
 	app App
 
-	textBox TextBox
-	items   []*item
+	// Model
+	items []*item
+
+	// View
+	textBox   TextBox
+	itemViews []*itemView
 }
 
 type item struct {
 	checked bool
+}
 
+type itemView struct {
 	checkbox Checkbox
 	label    Label
 }
@@ -32,13 +38,17 @@ func (g *Game) Update(_ *ebiten.Image) error {
 			if v == "" {
 				return
 			}
-			x, y := 16+4, 16+24*(2+len(g.items))
-			i := &item{
+
+			i := &item{}
+			g.items = append(g.items, i)
+
+			x, y := 16+4, 16+24*(2+len(g.itemViews))
+			iv := &itemView{
 				checkbox: g.app.NewCheckbox(x, y+4),
 				label:    g.app.NewLabel(x+24, y, v),
 			}
-			g.items = append(g.items, i)
-			i.checkbox.SetOnChange(func(c Checkbox) {
+			g.itemViews = append(g.itemViews, iv)
+			iv.checkbox.SetOnChange(func(c Checkbox) {
 				i.checked = c.Checked()
 			})
 			t.SetValue("")
@@ -46,12 +56,12 @@ func (g *Game) Update(_ *ebiten.Image) error {
 	}
 
 	// Update the view based on the model.
-	for _, i := range g.items {
+	for i, item := range g.items {
 		clr := color.RGBA{0, 0, 0, 0xff}
-		if i.checked {
+		if item.checked {
 			clr = color.RGBA{0x80, 0x80, 0x80, 0xff}
 		}
-		i.label.SetColor(clr)
+		g.itemViews[i].label.SetColor(clr)
 	}
 
 	return nil
