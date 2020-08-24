@@ -35,9 +35,10 @@ func init() {
 }
 
 type checkbox struct {
-	v js.Value
-	x int
-	y int
+	v       js.Value
+	x       int
+	y       int
+	checked bool // TODO: Consider 'intermediate' state. (aria-checked='mixed')
 
 	onchange func(Checkbox)
 
@@ -64,6 +65,7 @@ func newCheckbox(x, y int) *checkbox {
 	c.v = input
 
 	c.change = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		c.checked = c.v.Get("checked").Bool()
 		if c.onchange != nil {
 			c.onchange(c)
 		}
@@ -85,14 +87,14 @@ func (c *checkbox) Dispose() {
 
 func (c *checkbox) Draw(screen *ebiten.Image) {
 	src := checkboxOffImage
-	if c.v.Get("checked").Bool() {
+	if c.checked {
 		src = checkboxOnImage
 	}
 	drawNinePatch(screen, src, image.Rect(c.x, c.y, c.x+16, c.y+16))
 }
 
 func (c *checkbox) Checked() bool {
-	return c.v.Get("checked").Bool()
+	return c.checked
 }
 
 func (c *checkbox) SetOnChange(f func(checkbox Checkbox)) {
