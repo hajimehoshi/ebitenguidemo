@@ -34,18 +34,18 @@ func init() {
 	checkboxOnImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
 }
 
-type Checkbox struct {
+type checkbox struct {
 	v js.Value
 	x int
 	y int
 }
 
-func newCheckbox(x, y int) *Checkbox {
-	c := &Checkbox{
+func newCheckbox(x, y int) *checkbox {
+	c := &checkbox{
 		x: x,
 		y: y,
 	}
-	runtime.SetFinalizer(c, (*Checkbox).Dispose)
+	runtime.SetFinalizer(c, (*checkbox).Dispose)
 
 	input := js.Global().Get("document").Call("createElement", "input")
 	input.Set("type", "checkbox")
@@ -62,7 +62,7 @@ func newCheckbox(x, y int) *Checkbox {
 	return c
 }
 
-func (c *Checkbox) Dispose() {
+func (c *checkbox) Dispose() {
 	runtime.SetFinalizer(c, nil)
 
 	body := js.Global().Get("document").Get("body")
@@ -70,7 +70,7 @@ func (c *Checkbox) Dispose() {
 	c.v = js.Value{}
 }
 
-func (c *Checkbox) Draw(screen *ebiten.Image) {
+func (c *checkbox) Draw(screen *ebiten.Image) {
 	src := checkboxOffImage
 	if c.v.Get("checked").Bool() {
 		src = checkboxOnImage

@@ -17,14 +17,14 @@ type Game struct {
 }
 
 type item struct {
-	checkbox *Checkbox
-	label    *Label
+	checkbox Checkbox
+	label    Label
 }
 
 func (g *Game) Update(_ *ebiten.Image) error {
 	if !g.inited {
 		t := g.app.NewTextBox(image.Rect(16, 16, 16*21, 16+24))
-		t.SetOnEnter(func(t *TextBox) {
+		t.SetOnEnter(func(t TextBox) {
 			v := strings.TrimSpace(t.Value())
 			if v == "" {
 				return

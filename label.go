@@ -9,15 +9,15 @@ import (
 	"syscall/js"
 )
 
-type Label struct {
+type label struct {
 	v js.Value
 	x int
 	y int
 }
 
-func newLabel(x, y int, text string) *Label {
-	l := &Label{}
-	runtime.SetFinalizer(l, (*Label).Dispose)
+func newLabel(x, y int, text string) *label {
+	l := &label{}
+	runtime.SetFinalizer(l, (*label).Dispose)
 
 	span := js.Global().Get("document").Call("createElement", "span")
 	span.Get("style").Set("position", "absolute")
@@ -33,7 +33,7 @@ func newLabel(x, y int, text string) *Label {
 	return l
 }
 
-func (l *Label) Dispose() {
+func (l *label) Dispose() {
 	runtime.SetFinalizer(l, nil)
 
 	body := js.Global().Get("document").Get("body")

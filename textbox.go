@@ -32,20 +32,20 @@ func init() {
 	isSafari = strings.Contains(ua, "Safari/") && !strings.Contains(ua, "Chrome/") && !strings.Contains(ua, "Chromium/")
 }
 
-type TextBox struct {
+type textBox struct {
 	v                       js.Value
 	bounds                  image.Rectangle
 	justAfterCompositionEnd bool
 
-	onenter func(*TextBox)
+	onenter func(TextBox)
 
 	keydown        js.Func
 	compositionend js.Func
 }
 
-func newTextBox(bounds image.Rectangle) *TextBox {
-	t := &TextBox{}
-	runtime.SetFinalizer(t, (*TextBox).Dispose)
+func newTextBox(bounds image.Rectangle) *textBox {
+	t := &textBox{}
+	runtime.SetFinalizer(t, (*textBox).Dispose)
 
 	input := js.Global().Get("document").Call("createElement", "input")
 	input.Set("type", "text")
@@ -91,7 +91,7 @@ func newTextBox(bounds image.Rectangle) *TextBox {
 	return t
 }
 
-func (t *TextBox) Dispose() {
+func (t *textBox) Dispose() {
 	runtime.SetFinalizer(t, nil)
 
 	body := js.Global().Get("document").Get("body")
@@ -101,7 +101,7 @@ func (t *TextBox) Dispose() {
 	t.compositionend.Release()
 }
 
-func (t *TextBox) setBounds(bounds image.Rectangle) {
+func (t *textBox) setBounds(bounds image.Rectangle) {
 	t.bounds = bounds
 
 	x := bounds.Min.X
@@ -114,18 +114,18 @@ func (t *TextBox) setBounds(bounds image.Rectangle) {
 	t.v.Get("style").Set("height", fmt.Sprintf("%dpx", h-8))
 }
 
-func (t *TextBox) Draw(screen *ebiten.Image) {
+func (t *textBox) Draw(screen *ebiten.Image) {
 	drawNinePatch(screen, textBoxImage, t.bounds)
 }
 
-func (t *TextBox) Value() string {
+func (t *textBox) Value() string {
 	return t.v.Get("value").String()
 }
 
-func (t *TextBox) SetValue(value string) {
+func (t *textBox) SetValue(value string) {
 	t.v.Set("value", value)
 }
 
-func (t *TextBox) SetOnEnter(f func(*TextBox)) {
+func (t *textBox) SetOnEnter(f func(TextBox)) {
 	t.onenter = f
 }
