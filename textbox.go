@@ -43,7 +43,7 @@ type TextBox struct {
 	compositionend js.Func
 }
 
-func NewTextBox(bounds image.Rectangle) *TextBox {
+func newTextBox(bounds image.Rectangle) *TextBox {
 	t := &TextBox{}
 	runtime.SetFinalizer(t, (*TextBox).Dispose)
 

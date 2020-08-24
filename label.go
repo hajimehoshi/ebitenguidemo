@@ -15,7 +15,7 @@ type Label struct {
 	y int
 }
 
-func NewLabel(x, y int, text string) *Label {
+func newLabel(x, y int, text string) *Label {
 	l := &Label{}
 	runtime.SetFinalizer(l, (*Label).Dispose)
 

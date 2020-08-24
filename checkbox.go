@@ -40,7 +40,7 @@ type Checkbox struct {
 	y int
 }
 
-func NewCheckbox(x, y int) *Checkbox {
+func newCheckbox(x, y int) *Checkbox {
 	c := &Checkbox{
 		x: x,
 		y: y,
