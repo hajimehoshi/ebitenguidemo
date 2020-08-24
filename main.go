@@ -14,7 +14,7 @@ type Game struct {
 	app App
 
 	textBox TextBox
-	items   []item
+	items   []*item
 }
 
 type item struct {
@@ -33,7 +33,7 @@ func (g *Game) Update(_ *ebiten.Image) error {
 				return
 			}
 			x, y := 16+4, 16+24*(2+len(g.items))
-			i := item{
+			i := &item{
 				checkbox: g.app.NewCheckbox(x, y+4),
 				label:    g.app.NewLabel(x+24, y, v),
 			}
@@ -45,9 +45,10 @@ func (g *Game) Update(_ *ebiten.Image) error {
 		})
 	}
 
+	// Update the view based on the model.
 	for _, i := range g.items {
 		clr := color.RGBA{0, 0, 0, 0xff}
-		if i.checkbox.Checked() {
+		if i.checked {
 			clr = color.RGBA{0x80, 0x80, 0x80, 0xff}
 		}
 		i.label.SetColor(clr)
