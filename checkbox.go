@@ -38,6 +38,10 @@ type checkbox struct {
 	v js.Value
 	x int
 	y int
+
+	onchange func(Checkbox)
+
+	change js.Func
 }
 
 func newCheckbox(x, y int) *checkbox {
@@ -59,6 +63,14 @@ func newCheckbox(x, y int) *checkbox {
 
 	c.v = input
 
+	c.change = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		if c.onchange != nil {
+			c.onchange(c)
+		}
+		return nil
+	})
+	c.v.Call("addEventListener", "change", c.change)
+
 	return c
 }
 
@@ -68,6 +80,7 @@ func (c *checkbox) Dispose() {
 	body := js.Global().Get("document").Get("body")
 	body.Call("removeChild", c.v)
 	c.v = js.Value{}
+	c.change.Release()
 }
 
 func (c *checkbox) Draw(screen *ebiten.Image) {
@@ -76,4 +89,12 @@ func (c *checkbox) Draw(screen *ebiten.Image) {
 		src = checkboxOnImage
 	}
 	drawNinePatch(screen, src, image.Rect(c.x, c.y, c.x+16, c.y+16))
+}
+
+func (c *checkbox) Checked() bool {
+	return c.v.Get("checked").Bool()
+}
+
+func (c *checkbox) SetOnChange(f func(checkbox Checkbox)) {
+	c.onchange = f
 }

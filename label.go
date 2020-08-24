@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 
 	"runtime"
 	"syscall/js"
@@ -39,4 +40,15 @@ func (l *label) Dispose() {
 	body := js.Global().Get("document").Get("body")
 	body.Call("removeChild", l.v)
 	l.v = js.Value{}
+}
+
+func (l *label) SetColor(clr color.Color) {
+	r, g, b, a := clr.RGBA()
+	rf := float64(r) / float64(a)
+	gf := float64(g) / float64(a)
+	bf := float64(b) / float64(a)
+	af := float64(a) / 0xffff
+
+	code := fmt.Sprintf("#%02x%02x%02x%02x", byte(rf*0xff), byte(gf*0xff), byte(bf*0xff), byte(af*0xff))
+	l.v.Get("style").Set("color", code)
 }

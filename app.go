@@ -4,6 +4,7 @@ package main
 
 import (
 	"image"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten"
 )
@@ -20,13 +21,18 @@ type TextBox interface {
 	Value() string
 	SetValue(value string)
 
+	// TODO: Should this be SetOnChange?
 	SetOnEnter(func(textBox TextBox))
 }
 
 type Label interface {
+	SetColor(clr color.Color)
 }
 
 type Checkbox interface {
+	Checked() bool
+
+	SetOnChange(func(checkbox Checkbox))
 }
 
 func (a *App) Draw(screen *ebiten.Image) {

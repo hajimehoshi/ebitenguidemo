@@ -11,7 +11,7 @@ import (
 )
 
 type Game struct {
-	app    App
+	app App
 
 	textBox TextBox
 	items   []item
@@ -31,10 +31,19 @@ func (g *Game) Update(_ *ebiten.Image) error {
 				return
 			}
 			x, y := 16+4, 16+24*(2+len(g.items))
-			g.items = append(g.items, item{
+			i := item{
 				checkbox: g.app.NewCheckbox(x, y+4),
 				label:    g.app.NewLabel(x+24, y, v),
+			}
+			g.items = append(g.items, i)
+			i.checkbox.SetOnChange(func(c Checkbox) {
+				clr := color.RGBA{0, 0, 0, 0xff}
+				if c.Checked() {
+					clr = color.RGBA{0x80, 0x80, 0x80, 0xff}
+				}
+				i.label.SetColor(clr)
 			})
+
 			t.SetValue("")
 		})
 	}
