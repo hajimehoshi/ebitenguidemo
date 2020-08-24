@@ -14,10 +14,14 @@ type label struct {
 	v js.Value
 	x int
 	y int
+
+	color string
 }
 
 func newLabel(x, y int, text string) *label {
-	l := &label{}
+	l := &label{
+		color: "#000000ff",
+	}
 	runtime.SetFinalizer(l, (*label).Dispose)
 
 	span := js.Global().Get("document").Call("createElement", "span")
@@ -50,5 +54,8 @@ func (l *label) SetColor(clr color.Color) {
 	af := float64(a) / 0xffff
 
 	code := fmt.Sprintf("#%02x%02x%02x%02x", byte(rf*0xff), byte(gf*0xff), byte(bf*0xff), byte(af*0xff))
-	l.v.Get("style").Set("color", code)
+	if l.color != code {
+		l.color = code
+		l.v.Get("style").Set("color", code)
+	}
 }

@@ -18,6 +18,8 @@ type Game struct {
 }
 
 type item struct {
+	checked bool
+
 	checkbox Checkbox
 	label    Label
 }
@@ -37,16 +39,20 @@ func (g *Game) Update(_ *ebiten.Image) error {
 			}
 			g.items = append(g.items, i)
 			i.checkbox.SetOnChange(func(c Checkbox) {
-				clr := color.RGBA{0, 0, 0, 0xff}
-				if c.Checked() {
-					clr = color.RGBA{0x80, 0x80, 0x80, 0xff}
-				}
-				i.label.SetColor(clr)
+				i.checked = c.Checked()
 			})
-
 			t.SetValue("")
 		})
 	}
+
+	for _, i := range g.items {
+		clr := color.RGBA{0, 0, 0, 0xff}
+		if i.checkbox.Checked() {
+			clr = color.RGBA{0x80, 0x80, 0x80, 0xff}
+		}
+		i.label.SetColor(clr)
+	}
+
 	return nil
 }
 
