@@ -12,8 +12,9 @@ import (
 
 type Game struct {
 	app    App
-	inited bool
-	items  []item
+
+	textBox TextBox
+	items   []item
 }
 
 type item struct {
@@ -22,9 +23,9 @@ type item struct {
 }
 
 func (g *Game) Update(_ *ebiten.Image) error {
-	if !g.inited {
-		t := g.app.NewTextBox(image.Rect(16, 16, 16*21, 16+24))
-		t.SetOnEnter(func(t TextBox) {
+	if g.textBox == nil {
+		g.textBox = g.app.NewTextBox(image.Rect(16, 16, 16*21, 16+24))
+		g.textBox.SetOnEnter(func(t TextBox) {
 			v := strings.TrimSpace(t.Value())
 			if v == "" {
 				return
@@ -36,7 +37,6 @@ func (g *Game) Update(_ *ebiten.Image) error {
 			})
 			t.SetValue("")
 		})
-		g.inited = true
 	}
 	return nil
 }
