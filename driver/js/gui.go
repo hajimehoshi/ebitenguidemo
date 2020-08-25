@@ -7,43 +7,43 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 
-	"github.com/hajimehoshi/ebitenguidemo/driver"
+	"github.com/hajimehoshi/ebitenguidemo/gui"
 )
 
 type drawer interface {
 	Draw(screen *ebiten.Image)
 }
 
-type gui struct {
+type guiImpl struct {
 	drawers []drawer
 }
 
-func (g *gui) NewTextBox(bounds image.Rectangle) driver.TextBox {
+func (g *guiImpl) NewTextBox(bounds image.Rectangle) gui.TextBox {
 	t := newTextBox(bounds)
 	// TODO: How to remove the reference when t is disposed?
 	g.drawers = append(g.drawers, t)
 	return t
 }
 
-func (g *gui) NewNumberTextBox(bounds image.Rectangle) driver.NumberTextBox {
+func (g *guiImpl) NewNumberTextBox(bounds image.Rectangle) gui.NumberTextBox {
 	n := newNumberTextBox(bounds)
 	// TODO: How to remove the reference when t is disposed?
 	g.drawers = append(g.drawers, n)
 	return n
 }
 
-func (g *gui) NewLabel(x, y int, text string) driver.Label {
+func (g *guiImpl) NewLabel(x, y int, text string) gui.Label {
 	l := newLabel(x, y, text)
 	return l
 }
 
-func (g *gui) NewCheckbox(x, y int) driver.Checkbox {
+func (g *guiImpl) NewCheckbox(x, y int) gui.Checkbox {
 	c := newCheckbox(x, y)
 	g.drawers = append(g.drawers, c)
 	return c
 }
 
-func (g *gui) Draw(screen *ebiten.Image) {
+func (g *guiImpl) Draw(screen *ebiten.Image) {
 	for _, d := range g.drawers {
 		d.Draw(screen)
 	}

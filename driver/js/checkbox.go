@@ -12,7 +12,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 
-	"github.com/hajimehoshi/ebitenguidemo/driver"
+	"github.com/hajimehoshi/ebitenguidemo/gui"
 )
 
 var (
@@ -42,7 +42,7 @@ type checkbox struct {
 	y       int
 	checked bool // TODO: Consider 'intermediate' state. (aria-checked='mixed')
 
-	onchange func(driver.Checkbox)
+	onchange func(gui.Checkbox)
 
 	change js.Func
 }
@@ -99,6 +99,6 @@ func (c *checkbox) Checked() bool {
 	return c.checked
 }
 
-func (c *checkbox) SetOnChange(f func(checkbox driver.Checkbox)) {
+func (c *checkbox) SetOnChange(f func(checkbox gui.Checkbox)) {
 	c.onchange = f
 }

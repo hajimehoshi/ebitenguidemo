@@ -13,8 +13,8 @@ import (
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/examples/resources/images"
 
-	"github.com/hajimehoshi/ebitenguidemo/driver"
-	"github.com/hajimehoshi/ebitenguidemo/driver/js"
+	"github.com/hajimehoshi/ebitenguidemo"
+	"github.com/hajimehoshi/ebitenguidemo/gui"
 )
 
 var (
@@ -34,33 +34,33 @@ type App struct {
 	geoM ebiten.GeoM
 
 	// View
-	labels    []driver.Label
-	textBoxes []driver.NumberTextBox
+	labels    []gui.Label
+	textBoxes []gui.NumberTextBox
 }
 
-func (a *App) initIfNeeded(gui driver.GUI) {
+func (a *App) initIfNeeded(g gui.GUI) {
 	if len(a.textBoxes) > 0 {
 		return
 	}
 
 	const unit = 24
-	a.labels = []driver.Label{
-		gui.NewLabel(unit, unit, "A"),
-		gui.NewLabel(unit*6, unit, "B"),
-		gui.NewLabel(unit*11, unit, "TX"),
-		gui.NewLabel(unit, unit*4, "C"),
-		gui.NewLabel(unit*6, unit*4, "D"),
-		gui.NewLabel(unit*11, unit*4, "TY"),
+	a.labels = []gui.Label{
+		g.NewLabel(unit, unit, "A"),
+		g.NewLabel(unit*6, unit, "B"),
+		g.NewLabel(unit*11, unit, "TX"),
+		g.NewLabel(unit, unit*4, "C"),
+		g.NewLabel(unit*6, unit*4, "D"),
+		g.NewLabel(unit*11, unit*4, "TY"),
 	}
 	// TODO: Ideally the text box's text head should be on the same line as the label's text.
 	// Adjust the position.
-	a.textBoxes = []driver.NumberTextBox{
-		gui.NewNumberTextBox(image.Rect(unit, unit*2, unit*(1+4), unit*(2+1))),     // a
-		gui.NewNumberTextBox(image.Rect(unit*6, unit*2, unit*(6+4), unit*(2+1))),   // b
-		gui.NewNumberTextBox(image.Rect(unit*11, unit*2, unit*(11+4), unit*(2+1))), // tx
-		gui.NewNumberTextBox(image.Rect(unit, unit*5, unit*(1+4), unit*(5+1))),     // c
-		gui.NewNumberTextBox(image.Rect(unit*6, unit*5, unit*(6+4), unit*(5+1))),   // d
-		gui.NewNumberTextBox(image.Rect(unit*11, unit*5, unit*(11+4), unit*(5+1))), // ty
+	a.textBoxes = []gui.NumberTextBox{
+		g.NewNumberTextBox(image.Rect(unit, unit*2, unit*(1+4), unit*(2+1))),     // a
+		g.NewNumberTextBox(image.Rect(unit*6, unit*2, unit*(6+4), unit*(2+1))),   // b
+		g.NewNumberTextBox(image.Rect(unit*11, unit*2, unit*(11+4), unit*(2+1))), // tx
+		g.NewNumberTextBox(image.Rect(unit, unit*5, unit*(1+4), unit*(5+1))),     // c
+		g.NewNumberTextBox(image.Rect(unit*6, unit*5, unit*(6+4), unit*(5+1))),   // d
+		g.NewNumberTextBox(image.Rect(unit*11, unit*5, unit*(11+4), unit*(5+1))), // ty
 	}
 	a.textBoxes[0].SetValue(1)
 	a.textBoxes[1].SetValue(0)
@@ -71,14 +71,14 @@ func (a *App) initIfNeeded(gui driver.GUI) {
 
 	for i, t := range a.textBoxes {
 		i := i
-		t.SetOnChange(func(n driver.NumberTextBox) {
+		t.SetOnChange(func(n gui.NumberTextBox) {
 			a.geoM.SetElement(i/3, i%3, n.Value())
 		})
 	}
 }
 
-func (a *App) Update(gui driver.GUI) error {
-	a.initIfNeeded(gui)
+func (a *App) Update(g gui.GUI) error {
+	a.initIfNeeded(g)
 	return nil
 }
 
@@ -90,9 +90,8 @@ func (a *App) Draw(screen *ebiten.Image) {
 	screen.DrawImage(gophersImage, op)
 }
 
-func main() {
-	ebiten.SetRunnableOnUnfocused(true)
-	if err := ebiten.RunGame(js.NewApp(&App{})); err != nil {
+func main() {	
+	if err := ebitenguidemo.Run(&App{}); err != nil {
 		panic(err)
 	}
 }

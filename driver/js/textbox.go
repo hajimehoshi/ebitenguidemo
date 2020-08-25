@@ -14,7 +14,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 
-	"github.com/hajimehoshi/ebitenguidemo/driver"
+	"github.com/hajimehoshi/ebitenguidemo/gui"
 )
 
 var textBoxImage *ebiten.Image
@@ -40,8 +40,8 @@ type textBox struct {
 	bounds                  image.Rectangle
 	justAfterCompositionEnd bool
 
-	onchange func(driver.TextBox)
-	onenter  func(driver.TextBox)
+	onchange func(gui.TextBox)
+	onenter  func(gui.TextBox)
 
 	change         js.Func
 	keydown        js.Func
@@ -139,18 +139,18 @@ func (t *textBox) SetValue(value string) {
 	t.v.Set("value", value)
 }
 
-func (t *textBox) SetOnChange(f func(driver.TextBox)) {
+func (t *textBox) SetOnChange(f func(gui.TextBox)) {
 	t.onchange = f
 }
 
-func (t *textBox) SetOnEnter(f func(driver.TextBox)) {
+func (t *textBox) SetOnEnter(f func(gui.TextBox)) {
 	t.onenter = f
 }
 
 type numberTextBox struct {
 	*textBox
 
-	onchange func(driver.TextBox)
+	onchange func(gui.TextBox)
 
 	value float64
 }
@@ -186,8 +186,8 @@ func (n *numberTextBox) SetValue(v float64) {
 	}
 }
 
-func (n *numberTextBox) SetOnChange(f func(driver.NumberTextBox)) {
-	n.textBox.SetOnChange(func(driver.TextBox) {
+func (n *numberTextBox) SetOnChange(f func(gui.NumberTextBox)) {
+	n.textBox.SetOnChange(func(gui.TextBox) {
 		str := n.textBox.v.Get("value").String()
 		v, err := strconv.ParseFloat(str, 64)
 		if err != nil {

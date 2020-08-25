@@ -5,15 +5,20 @@ package js
 import (
 	"github.com/hajimehoshi/ebiten"
 
-	"github.com/hajimehoshi/ebitenguidemo/driver"
+	"github.com/hajimehoshi/ebitenguidemo/gui"
 )
 
-type App struct {
-	app driver.App
-	gui gui
+type app interface {
+	Update(gui gui.GUI) error
+	Draw(screen *ebiten.Image)
 }
 
-func NewApp(app driver.App) *App {
+type App struct {
+	app app
+	gui guiImpl
+}
+
+func NewApp(app app) *App {
 	return &App{
 		app: app,
 	}

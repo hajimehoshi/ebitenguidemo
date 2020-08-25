@@ -1,18 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package driver
+package gui
 
 import (
 	"image"
 	"image/color"
-
-	"github.com/hajimehoshi/ebiten"
 )
-
-type App interface {
-	Update(gui GUI) error
-	Draw(screen *ebiten.Image)
-}
 
 type GUI interface {
 	NewTextBox(bounds image.Rectangle) TextBox
