@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package js
 
 import (
 	"bytes"
@@ -11,6 +11,8 @@ import (
 	"syscall/js"
 
 	"github.com/hajimehoshi/ebiten"
+
+	"github.com/hajimehoshi/ebitenguidemo/driver"
 )
 
 var (
@@ -40,7 +42,7 @@ type checkbox struct {
 	y       int
 	checked bool // TODO: Consider 'intermediate' state. (aria-checked='mixed')
 
-	onchange func(Checkbox)
+	onchange func(driver.Checkbox)
 
 	change js.Func
 }
@@ -97,6 +99,6 @@ func (c *checkbox) Checked() bool {
 	return c.checked
 }
 
-func (c *checkbox) SetOnChange(f func(checkbox Checkbox)) {
+func (c *checkbox) SetOnChange(f func(checkbox driver.Checkbox)) {
 	c.onchange = f
 }

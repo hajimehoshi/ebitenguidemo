@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package js
 
 import (
 	"bytes"
@@ -12,6 +12,8 @@ import (
 	"syscall/js"
 
 	"github.com/hajimehoshi/ebiten"
+
+	"github.com/hajimehoshi/ebitenguidemo/driver"
 )
 
 var textBoxImage *ebiten.Image
@@ -37,7 +39,7 @@ type textBox struct {
 	bounds                  image.Rectangle
 	justAfterCompositionEnd bool
 
-	onenter func(TextBox)
+	onenter func(driver.TextBox)
 
 	keydown        js.Func
 	compositionend js.Func
@@ -126,6 +128,6 @@ func (t *textBox) SetValue(value string) {
 	t.v.Set("value", value)
 }
 
-func (t *textBox) SetOnEnter(f func(TextBox)) {
+func (t *textBox) SetOnEnter(f func(driver.TextBox)) {
 	t.onenter = f
 }

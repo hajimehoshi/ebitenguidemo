@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package js
 
 import (
 	"image"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten"
+
+	"github.com/hajimehoshi/ebitenguidemo/driver"
 )
 
 type drawer interface {
@@ -15,24 +16,6 @@ type drawer interface {
 
 type App struct {
 	drawers []drawer
-}
-
-type TextBox interface {
-	Value() string
-	SetValue(value string)
-
-	// TODO: Should this be SetOnChange?
-	SetOnEnter(func(textBox TextBox))
-}
-
-type Label interface {
-	SetColor(clr color.Color)
-}
-
-type Checkbox interface {
-	Checked() bool
-
-	SetOnChange(func(checkbox Checkbox))
 }
 
 func (a *App) Draw(screen *ebiten.Image) {
@@ -45,19 +28,19 @@ func (a *App) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return outsideWidth, outsideHeight
 }
 
-func (a *App) NewTextBox(bounds image.Rectangle) TextBox {
+func (a *App) NewTextBox(bounds image.Rectangle) driver.TextBox {
 	t := newTextBox(bounds)
 	// TODO: How to remove the reference when t is disposed?
 	a.drawers = append(a.drawers, t)
 	return t
 }
 
-func (a *App) NewLabel(x, y int, text string) Label {
+func (a *App) NewLabel(x, y int, text string) driver.Label {
 	l := newLabel(x, y, text)
 	return l
 }
 
-func (a *App) NewCheckbox(x, y int) Checkbox {
+func (a *App) NewCheckbox(x, y int) driver.Checkbox {
 	c := newCheckbox(x, y)
 	a.drawers = append(a.drawers, c)
 	return c
