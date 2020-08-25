@@ -20,6 +20,9 @@ input {
   border-style: none;
   outline: none;
 }
+input[type=number] {
+  text-align: right;
+}
 `
 
 func init() {

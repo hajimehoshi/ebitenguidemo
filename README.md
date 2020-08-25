@@ -5,7 +5,7 @@ A GUI demonstration in [Ebiten](https://ebiten.org). This is work in progress.
 ```
 git clone https://github.com/hajimehoshi/ebitenguidemo
 cd ebitenguidemo
-wasmserve .
+wasmserve -tags=example ./example/image
 ```
 
 and open `http://localhost:8080` on your browser.

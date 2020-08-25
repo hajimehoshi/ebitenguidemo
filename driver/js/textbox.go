@@ -8,6 +8,7 @@ import (
 	"image"
 	_ "image/png"
 	"runtime"
+	"strconv"
 	"strings"
 	"syscall/js"
 
@@ -39,8 +40,10 @@ type textBox struct {
 	bounds                  image.Rectangle
 	justAfterCompositionEnd bool
 
-	onenter func(driver.TextBox)
+	onchange func(driver.TextBox)
+	onenter  func(driver.TextBox)
 
+	change         js.Func
 	keydown        js.Func
 	compositionend js.Func
 }
@@ -58,6 +61,14 @@ func newTextBox(bounds image.Rectangle) *textBox {
 
 	t.v = input
 	t.setBounds(bounds)
+
+	t.change = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		if t.onchange != nil {
+			t.onchange(t)
+		}
+		return nil
+	})
+	input.Call("addEventListener", "change", t.change)
 
 	t.keydown = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		if t.onenter == nil {
@@ -110,8 +121,8 @@ func (t *textBox) setBounds(bounds image.Rectangle) {
 	y := bounds.Min.Y
 	w := bounds.Dx()
 	h := bounds.Dy()
-	t.v.Get("style").Set("left", fmt.Sprintf("%dpx", y+8))
-	t.v.Get("style").Set("top", fmt.Sprintf("%dpx", x+4))
+	t.v.Get("style").Set("left", fmt.Sprintf("%dpx", x+8))
+	t.v.Get("style").Set("top", fmt.Sprintf("%dpx", y+4))
 	t.v.Get("style").Set("width", fmt.Sprintf("%dpx", w-16))
 	t.v.Get("style").Set("height", fmt.Sprintf("%dpx", h-8))
 }
@@ -128,6 +139,61 @@ func (t *textBox) SetValue(value string) {
 	t.v.Set("value", value)
 }
 
+func (t *textBox) SetOnChange(f func(driver.TextBox)) {
+	t.onchange = f
+}
+
 func (t *textBox) SetOnEnter(f func(driver.TextBox)) {
 	t.onenter = f
+}
+
+type numberTextBox struct {
+	*textBox
+
+	onchange func(driver.TextBox)
+
+	value float64
+}
+
+func newNumberTextBox(bounds image.Rectangle) *numberTextBox {
+	n := &numberTextBox{
+		textBox: newTextBox(bounds),
+	}
+	runtime.SetFinalizer(n, (*numberTextBox).Dispose)
+
+	n.textBox.v.Set("type", "number")
+	n.textBox.v.Set("value", "0")
+
+	return n
+}
+
+func (n *numberTextBox) Dispose() {
+	runtime.SetFinalizer(n, nil)
+
+	n.textBox.Dispose()
+	n.textBox = nil
+}
+
+func (n *numberTextBox) Value() float64 {
+	return n.value
+}
+
+func (n *numberTextBox) SetValue(v float64) {
+	changed := n.value != v
+	n.value = v
+	if changed {
+		n.textBox.v.Set("value", v)
+	}
+}
+
+func (n *numberTextBox) SetOnChange(f func(driver.NumberTextBox)) {
+	n.textBox.SetOnChange(func(driver.TextBox) {
+		str := n.textBox.v.Get("value").String()
+		v, err := strconv.ParseFloat(str, 64)
+		if err != nil {
+			v = 0
+		}
+		n.value = v
+		f(n)
+	})
 }

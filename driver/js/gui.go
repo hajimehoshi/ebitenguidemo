@@ -25,6 +25,13 @@ func (g *gui) NewTextBox(bounds image.Rectangle) driver.TextBox {
 	return t
 }
 
+func (g *gui) NewNumberTextBox(bounds image.Rectangle) driver.NumberTextBox {
+	n := newNumberTextBox(bounds)
+	// TODO: How to remove the reference when t is disposed?
+	g.drawers = append(g.drawers, n)
+	return n
+}
+
 func (g *gui) NewLabel(x, y int, text string) driver.Label {
 	l := newLabel(x, y, text)
 	return l

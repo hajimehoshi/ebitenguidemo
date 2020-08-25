@@ -16,6 +16,7 @@ type App interface {
 
 type GUI interface {
 	NewTextBox(bounds image.Rectangle) TextBox
+	NewNumberTextBox(bounds image.Rectangle) NumberTextBox
 	NewLabel(x, y int, text string) Label
 	NewCheckbox(x, y int) Checkbox
 }
@@ -24,8 +25,15 @@ type TextBox interface {
 	Value() string
 	SetValue(value string)
 
-	// TODO: Should this be SetOnChange?
+	SetOnChange(func(textBox TextBox))
 	SetOnEnter(func(textBox TextBox))
+}
+
+type NumberTextBox interface {
+	Value() float64
+	SetValue(value float64)
+
+	SetOnChange(func(numberTextBox NumberTextBox))
 }
 
 type Label interface {
