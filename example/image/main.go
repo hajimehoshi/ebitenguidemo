@@ -33,12 +33,12 @@ type App struct {
 	geoM ebiten.GeoM
 
 	// View
-	labels    []*ebitenguidemo.Label
-	textBoxes []*ebitenguidemo.NumberField
+	labels       []*ebitenguidemo.Label
+	numberFields []*ebitenguidemo.NumberField
 }
 
 func (a *App) initIfNeeded(g *ebitenguidemo.GUI) {
-	if len(a.textBoxes) > 0 {
+	if len(a.numberFields) > 0 {
 		return
 	}
 
@@ -53,7 +53,7 @@ func (a *App) initIfNeeded(g *ebitenguidemo.GUI) {
 	}
 	// TODO: Ideally the text box's text head should be on the same line as the label's text.
 	// Adjust the position.
-	a.textBoxes = []*ebitenguidemo.NumberField{
+	a.numberFields = []*ebitenguidemo.NumberField{
 		g.NewNumberField(image.Rect(unit, unit*2, unit*(1+4), unit*(2+1))),     // a
 		g.NewNumberField(image.Rect(unit*6, unit*2, unit*(6+4), unit*(2+1))),   // b
 		g.NewNumberField(image.Rect(unit*11, unit*2, unit*(11+4), unit*(2+1))), // tx
@@ -61,14 +61,14 @@ func (a *App) initIfNeeded(g *ebitenguidemo.GUI) {
 		g.NewNumberField(image.Rect(unit*6, unit*5, unit*(6+4), unit*(5+1))),   // d
 		g.NewNumberField(image.Rect(unit*11, unit*5, unit*(11+4), unit*(5+1))), // ty
 	}
-	a.textBoxes[0].SetValue(1)
-	a.textBoxes[1].SetValue(0)
-	a.textBoxes[2].SetValue(0)
-	a.textBoxes[3].SetValue(0)
-	a.textBoxes[4].SetValue(1)
-	a.textBoxes[5].SetValue(0)
+	a.numberFields[0].SetValue(1)
+	a.numberFields[1].SetValue(0)
+	a.numberFields[2].SetValue(0)
+	a.numberFields[3].SetValue(0)
+	a.numberFields[4].SetValue(1)
+	a.numberFields[5].SetValue(0)
 
-	for i, t := range a.textBoxes {
+	for i, t := range a.numberFields {
 		i := i
 		t.SetOnChange(func(n *ebitenguidemo.NumberField) {
 			a.geoM.SetElement(i/3, i%3, n.Value())

@@ -63,7 +63,7 @@ func (c *checkbox) Dispose() {
 }
 
 func (c *checkbox) Bounds() image.Rectangle {
-	return image.Rect(c.x, c.y, c.x +16, c.y+16)
+	return image.Rect(c.x, c.y, c.x+16, c.y+16)
 }
 
 func (c *checkbox) Checked() bool {
