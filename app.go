@@ -9,6 +9,18 @@ import (
 )
 
 type App interface {
-	Update(gui driver.GUI) error
+	Update(gui *GUI) error
 	Draw(screen *ebiten.Image)
+}
+
+type appWrapper struct {
+	app App
+}
+
+func (a *appWrapper) Update(gui driver.GUI) error {
+	return a.app.Update(&GUI{gui: gui})
+}
+
+func (a *appWrapper) Draw(screen *ebiten.Image) {
+	a.app.Draw(screen)
 }

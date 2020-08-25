@@ -10,7 +10,7 @@ import (
 
 func Run(app App) error {
 	ebiten.SetRunnableOnUnfocused(true)
-	if err := ebiten.RunGame(js.NewApp(app)); err != nil {
+	if err := ebiten.RunGame(js.NewApp(&appWrapper{app: app})); err != nil {
 		return err
 	}
 	return nil
