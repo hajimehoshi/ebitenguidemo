@@ -35,7 +35,7 @@ type App struct {
 
 	// View
 	labels    []gui.Label
-	textBoxes []gui.NumberTextBox
+	textBoxes []gui.NumberField
 }
 
 func (a *App) initIfNeeded(g gui.GUI) {
@@ -54,13 +54,13 @@ func (a *App) initIfNeeded(g gui.GUI) {
 	}
 	// TODO: Ideally the text box's text head should be on the same line as the label's text.
 	// Adjust the position.
-	a.textBoxes = []gui.NumberTextBox{
-		g.NewNumberTextBox(image.Rect(unit, unit*2, unit*(1+4), unit*(2+1))),     // a
-		g.NewNumberTextBox(image.Rect(unit*6, unit*2, unit*(6+4), unit*(2+1))),   // b
-		g.NewNumberTextBox(image.Rect(unit*11, unit*2, unit*(11+4), unit*(2+1))), // tx
-		g.NewNumberTextBox(image.Rect(unit, unit*5, unit*(1+4), unit*(5+1))),     // c
-		g.NewNumberTextBox(image.Rect(unit*6, unit*5, unit*(6+4), unit*(5+1))),   // d
-		g.NewNumberTextBox(image.Rect(unit*11, unit*5, unit*(11+4), unit*(5+1))), // ty
+	a.textBoxes = []gui.NumberField{
+		g.NewNumberField(image.Rect(unit, unit*2, unit*(1+4), unit*(2+1))),     // a
+		g.NewNumberField(image.Rect(unit*6, unit*2, unit*(6+4), unit*(2+1))),   // b
+		g.NewNumberField(image.Rect(unit*11, unit*2, unit*(11+4), unit*(2+1))), // tx
+		g.NewNumberField(image.Rect(unit, unit*5, unit*(1+4), unit*(5+1))),     // c
+		g.NewNumberField(image.Rect(unit*6, unit*5, unit*(6+4), unit*(5+1))),   // d
+		g.NewNumberField(image.Rect(unit*11, unit*5, unit*(11+4), unit*(5+1))), // ty
 	}
 	a.textBoxes[0].SetValue(1)
 	a.textBoxes[1].SetValue(0)
@@ -71,7 +71,7 @@ func (a *App) initIfNeeded(g gui.GUI) {
 
 	for i, t := range a.textBoxes {
 		i := i
-		t.SetOnChange(func(n gui.NumberTextBox) {
+		t.SetOnChange(func(n gui.NumberField) {
 			a.geoM.SetElement(i/3, i%3, n.Value())
 		})
 	}

@@ -8,25 +8,25 @@ import (
 )
 
 type GUI interface {
-	NewTextBox(bounds image.Rectangle) TextBox
-	NewNumberTextBox(bounds image.Rectangle) NumberTextBox
+	NewTextField(bounds image.Rectangle) TextField
+	NewNumberField(bounds image.Rectangle) NumberField
 	NewLabel(x, y int, text string) Label
 	NewCheckbox(x, y int) Checkbox
 }
 
-type TextBox interface {
+type TextField interface {
 	Value() string
 	SetValue(value string)
 
-	SetOnChange(func(textBox TextBox))
-	SetOnEnter(func(textBox TextBox))
+	SetOnChange(func(textBox TextField))
+	SetOnEnter(func(textBox TextField))
 }
 
-type NumberTextBox interface {
+type NumberField interface {
 	Value() float64
 	SetValue(value float64)
 
-	SetOnChange(func(numberTextBox NumberTextBox))
+	SetOnChange(func(numberTextField NumberField))
 }
 
 type Label interface {

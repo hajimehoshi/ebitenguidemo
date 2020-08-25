@@ -18,16 +18,15 @@ type guiImpl struct {
 	drawers []drawer
 }
 
-func (g *guiImpl) NewTextBox(bounds image.Rectangle) gui.TextBox {
-	t := newTextBox(bounds)
+func (g *guiImpl) NewTextField(bounds image.Rectangle) gui.TextField {
+	t := newTextField(bounds)
 	// TODO: How to remove the reference when t is disposed?
 	g.drawers = append(g.drawers, t)
 	return t
 }
 
-func (g *guiImpl) NewNumberTextBox(bounds image.Rectangle) gui.NumberTextBox {
-	n := newNumberTextBox(bounds)
-	// TODO: How to remove the reference when t is disposed?
+func (g *guiImpl) NewNumberField(bounds image.Rectangle) gui.NumberField {
+	n := newNumberField(bounds)
 	g.drawers = append(g.drawers, n)
 	return n
 }

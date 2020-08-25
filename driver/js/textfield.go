@@ -17,14 +17,14 @@ import (
 	"github.com/hajimehoshi/ebitenguidemo/gui"
 )
 
-var textBoxImage *ebiten.Image
+var textFieldImage *ebiten.Image
 
 func init() {
-	img, _, err := image.Decode(bytes.NewReader(textbox_png))
+	img, _, err := image.Decode(bytes.NewReader(textfield_png))
 	if err != nil {
 		panic(err)
 	}
-	textBoxImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
+	textFieldImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
 }
 
 var isSafari bool
@@ -35,22 +35,22 @@ func init() {
 	isSafari = strings.Contains(ua, "Safari/") && !strings.Contains(ua, "Chrome/") && !strings.Contains(ua, "Chromium/")
 }
 
-type textBox struct {
+type textField struct {
 	v                       js.Value
 	bounds                  image.Rectangle
 	justAfterCompositionEnd bool
 
-	onchange func(gui.TextBox)
-	onenter  func(gui.TextBox)
+	onchange func(gui.TextField)
+	onenter  func(gui.TextField)
 
 	change         js.Func
 	keydown        js.Func
 	compositionend js.Func
 }
 
-func newTextBox(bounds image.Rectangle) *textBox {
-	t := &textBox{}
-	runtime.SetFinalizer(t, (*textBox).Dispose)
+func newTextField(bounds image.Rectangle) *textField {
+	t := &textField{}
+	runtime.SetFinalizer(t, (*textField).Dispose)
 
 	input := js.Global().Get("document").Call("createElement", "input")
 	input.Set("type", "text")
@@ -104,7 +104,7 @@ func newTextBox(bounds image.Rectangle) *textBox {
 	return t
 }
 
-func (t *textBox) Dispose() {
+func (t *textField) Dispose() {
 	runtime.SetFinalizer(t, nil)
 
 	body := js.Global().Get("document").Get("body")
@@ -114,7 +114,7 @@ func (t *textBox) Dispose() {
 	t.compositionend.Release()
 }
 
-func (t *textBox) setBounds(bounds image.Rectangle) {
+func (t *textField) setBounds(bounds image.Rectangle) {
 	t.bounds = bounds
 
 	x := bounds.Min.X
@@ -127,68 +127,68 @@ func (t *textBox) setBounds(bounds image.Rectangle) {
 	t.v.Get("style").Set("height", fmt.Sprintf("%dpx", h-8))
 }
 
-func (t *textBox) Draw(screen *ebiten.Image) {
-	drawNinePatch(screen, textBoxImage, t.bounds)
+func (t *textField) Draw(screen *ebiten.Image) {
+	drawNinePatch(screen, textFieldImage, t.bounds)
 }
 
-func (t *textBox) Value() string {
+func (t *textField) Value() string {
 	return t.v.Get("value").String()
 }
 
-func (t *textBox) SetValue(value string) {
+func (t *textField) SetValue(value string) {
 	t.v.Set("value", value)
 }
 
-func (t *textBox) SetOnChange(f func(gui.TextBox)) {
+func (t *textField) SetOnChange(f func(gui.TextField)) {
 	t.onchange = f
 }
 
-func (t *textBox) SetOnEnter(f func(gui.TextBox)) {
+func (t *textField) SetOnEnter(f func(gui.TextField)) {
 	t.onenter = f
 }
 
-type numberTextBox struct {
-	*textBox
+type numberField struct {
+	*textField
 
-	onchange func(gui.TextBox)
+	onchange func(gui.TextField)
 
 	value float64
 }
 
-func newNumberTextBox(bounds image.Rectangle) *numberTextBox {
-	n := &numberTextBox{
-		textBox: newTextBox(bounds),
+func newNumberField(bounds image.Rectangle) *numberField {
+	n := &numberField{
+		textField: newTextField(bounds),
 	}
-	runtime.SetFinalizer(n, (*numberTextBox).Dispose)
+	runtime.SetFinalizer(n, (*numberField).Dispose)
 
-	n.textBox.v.Set("type", "number")
-	n.textBox.v.Set("value", "0")
+	n.textField.v.Set("type", "number")
+	n.textField.v.Set("value", "0")
 
 	return n
 }
 
-func (n *numberTextBox) Dispose() {
+func (n *numberField) Dispose() {
 	runtime.SetFinalizer(n, nil)
 
-	n.textBox.Dispose()
-	n.textBox = nil
+	n.textField.Dispose()
+	n.textField = nil
 }
 
-func (n *numberTextBox) Value() float64 {
+func (n *numberField) Value() float64 {
 	return n.value
 }
 
-func (n *numberTextBox) SetValue(v float64) {
+func (n *numberField) SetValue(v float64) {
 	changed := n.value != v
 	n.value = v
 	if changed {
-		n.textBox.v.Set("value", v)
+		n.textField.v.Set("value", v)
 	}
 }
 
-func (n *numberTextBox) SetOnChange(f func(gui.NumberTextBox)) {
-	n.textBox.SetOnChange(func(gui.TextBox) {
-		str := n.textBox.v.Get("value").String()
+func (n *numberField) SetOnChange(f func(gui.NumberField)) {
+	n.textField.SetOnChange(func(gui.TextField) {
+		str := n.textField.v.Get("value").String()
 		v, err := strconv.ParseFloat(str, 64)
 		if err != nil {
 			v = 0
