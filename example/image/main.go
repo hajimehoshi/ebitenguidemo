@@ -14,7 +14,7 @@ import (
 	"github.com/hajimehoshi/ebiten/examples/resources/images"
 
 	"github.com/hajimehoshi/ebitenguidemo"
-	"github.com/hajimehoshi/ebitenguidemo/gui"
+	"github.com/hajimehoshi/ebitenguidemo/driver" // TODO: Hide this
 )
 
 var (
@@ -34,17 +34,17 @@ type App struct {
 	geoM ebiten.GeoM
 
 	// View
-	labels    []gui.Label
-	textBoxes []gui.NumberField
+	labels    []driver.Label
+	textBoxes []driver.NumberField
 }
 
-func (a *App) initIfNeeded(g gui.GUI) {
+func (a *App) initIfNeeded(g driver.GUI) {
 	if len(a.textBoxes) > 0 {
 		return
 	}
 
 	const unit = 24
-	a.labels = []gui.Label{
+	a.labels = []driver.Label{
 		g.NewLabel(unit, unit, "A"),
 		g.NewLabel(unit*6, unit, "B"),
 		g.NewLabel(unit*11, unit, "TX"),
@@ -54,7 +54,7 @@ func (a *App) initIfNeeded(g gui.GUI) {
 	}
 	// TODO: Ideally the text box's text head should be on the same line as the label's text.
 	// Adjust the position.
-	a.textBoxes = []gui.NumberField{
+	a.textBoxes = []driver.NumberField{
 		g.NewNumberField(image.Rect(unit, unit*2, unit*(1+4), unit*(2+1))),     // a
 		g.NewNumberField(image.Rect(unit*6, unit*2, unit*(6+4), unit*(2+1))),   // b
 		g.NewNumberField(image.Rect(unit*11, unit*2, unit*(11+4), unit*(2+1))), // tx
@@ -71,13 +71,13 @@ func (a *App) initIfNeeded(g gui.GUI) {
 
 	for i, t := range a.textBoxes {
 		i := i
-		t.SetOnChange(func(n gui.NumberField) {
+		t.SetOnChange(func(n driver.NumberField) {
 			a.geoM.SetElement(i/3, i%3, n.Value())
 		})
 	}
 }
 
-func (a *App) Update(g gui.GUI) error {
+func (a *App) Update(g driver.GUI) error {
 	a.initIfNeeded(g)
 	return nil
 }

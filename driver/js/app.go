@@ -5,11 +5,11 @@ package js
 import (
 	"github.com/hajimehoshi/ebiten"
 
-	"github.com/hajimehoshi/ebitenguidemo/gui"
+	"github.com/hajimehoshi/ebitenguidemo/driver"
 )
 
 type app interface {
-	Update(gui gui.GUI) error
+	Update(gui driver.GUI) error
 	Draw(screen *ebiten.Image)
 }
 

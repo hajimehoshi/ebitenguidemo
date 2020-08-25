@@ -14,7 +14,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 
-	"github.com/hajimehoshi/ebitenguidemo/gui"
+	"github.com/hajimehoshi/ebitenguidemo/driver"
 )
 
 var textFieldImage *ebiten.Image
@@ -40,8 +40,8 @@ type textField struct {
 	bounds                  image.Rectangle
 	justAfterCompositionEnd bool
 
-	onchange func(gui.TextField)
-	onenter  func(gui.TextField)
+	onchange func(driver.TextField)
+	onenter  func(driver.TextField)
 
 	change         js.Func
 	keydown        js.Func
@@ -139,18 +139,18 @@ func (t *textField) SetValue(value string) {
 	t.v.Set("value", value)
 }
 
-func (t *textField) SetOnChange(f func(gui.TextField)) {
+func (t *textField) SetOnChange(f func(driver.TextField)) {
 	t.onchange = f
 }
 
-func (t *textField) SetOnEnter(f func(gui.TextField)) {
+func (t *textField) SetOnEnter(f func(driver.TextField)) {
 	t.onenter = f
 }
 
 type numberField struct {
 	*textField
 
-	onchange func(gui.TextField)
+	onchange func(driver.TextField)
 
 	value float64
 }
@@ -186,8 +186,8 @@ func (n *numberField) SetValue(v float64) {
 	}
 }
 
-func (n *numberField) SetOnChange(f func(gui.NumberField)) {
-	n.textField.SetOnChange(func(gui.TextField) {
+func (n *numberField) SetOnChange(f func(driver.NumberField)) {
+	n.textField.SetOnChange(func(driver.TextField) {
 		str := n.textField.v.Get("value").String()
 		v, err := strconv.ParseFloat(str, 64)
 		if err != nil {
