@@ -13,9 +13,7 @@ import (
 	"github.com/hajimehoshi/ebitenguidemo/driver/js"
 )
 
-type Game struct {
-	app driver.App
-
+type App struct {
 	// Model
 	items []*item
 
@@ -33,28 +31,27 @@ type itemView struct {
 	label    driver.Label
 }
 
-func (g *Game) ensureApp() {
-	if g.app != nil {
+func (a *App) initIfNeeded(gui driver.GUI) {
+	if a.textBox != nil {
 		return
 	}
 
-	g.app = &js.App{}
-	g.textBox = g.app.NewTextBox(image.Rect(16, 16, 16*21, 16+24))
-	g.textBox.SetOnEnter(func(t driver.TextBox) {
+	a.textBox = gui.NewTextBox(image.Rect(16, 16, 16*21, 16+24))
+	a.textBox.SetOnEnter(func(t driver.TextBox) {
 		v := strings.TrimSpace(t.Value())
 		if v == "" {
 			return
 		}
 
 		i := &item{}
-		g.items = append(g.items, i)
+		a.items = append(a.items, i)
 
-		x, y := 16+4, 16+24*(2+len(g.itemViews))
+		x, y := 16+4, 16+24*(2+len(a.itemViews))
 		iv := &itemView{
-			checkbox: g.app.NewCheckbox(x, y+4),
-			label:    g.app.NewLabel(x+24, y, v),
+			checkbox: gui.NewCheckbox(x, y+4),
+			label:    gui.NewLabel(x+24, y, v),
 		}
-		g.itemViews = append(g.itemViews, iv)
+		a.itemViews = append(a.itemViews, iv)
 		iv.checkbox.SetOnChange(func(c driver.Checkbox) {
 			i.checked = c.Checked()
 		})
@@ -62,41 +59,28 @@ func (g *Game) ensureApp() {
 	})
 }
 
-func (g *Game) Update(screen *ebiten.Image) error {
-	g.ensureApp()
-
-	if err := g.app.Update(screen); err != nil {
-		return err
-	}
+func (a *App) Update(gui driver.GUI) error {
+	a.initIfNeeded(gui)
 
 	// Update the view based on the model.
-	for i, item := range g.items {
+	for i, item := range a.items {
 		clr := color.RGBA{0, 0, 0, 0xff}
 		if item.checked {
 			clr = color.RGBA{0x80, 0x80, 0x80, 0xff}
 		}
-		g.itemViews[i].label.SetColor(clr)
+		a.itemViews[i].label.SetColor(clr)
 	}
 
 	return nil
 }
 
-func (g *Game) Draw(screen *ebiten.Image) {
-	g.ensureApp()
-
+func (a *App) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{0xc0, 0xc0, 0xc0, 0xff})
-	g.app.Draw(screen)
-}
-
-func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	g.ensureApp()
-
-	return g.app.Layout(outsideWidth, outsideHeight)
 }
 
 func main() {
 	ebiten.SetRunnableOnUnfocused(true)
-	if err := ebiten.RunGame(&Game{}); err != nil {
+	if err := ebiten.RunGame(js.NewApp(&App{})); err != nil {
 		panic(err)
 	}
 }

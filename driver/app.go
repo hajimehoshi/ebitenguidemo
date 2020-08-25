@@ -10,9 +10,11 @@ import (
 )
 
 type App interface {
-	ebiten.Game
-	Draw(screen *ebiten.Image) // Draw is not defined ebiten.Game so far, and will be defined in Ebiten v2.
+	Update(gui GUI) error
+	Draw(screen *ebiten.Image)
+}
 
+type GUI interface {
 	NewTextBox(bounds image.Rectangle) TextBox
 	NewLabel(x, y int, text string) Label
 	NewCheckbox(x, y int) Checkbox
