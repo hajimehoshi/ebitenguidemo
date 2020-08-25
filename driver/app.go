@@ -10,8 +10,8 @@ import (
 )
 
 type App interface {
-	Draw(screen *ebiten.Image)
-	Layout(outsideWidth, outsideHeight int) (int, int)
+	ebiten.Game
+	Draw(screen *ebiten.Image) // Draw is not defined ebiten.Game so far, and will be defined in Ebiten v2.
 
 	NewTextBox(bounds image.Rectangle) TextBox
 	NewLabel(x, y int, text string) Label

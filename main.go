@@ -62,8 +62,12 @@ func (g *Game) ensureApp() {
 	})
 }
 
-func (g *Game) Update(_ *ebiten.Image) error {
+func (g *Game) Update(screen *ebiten.Image) error {
 	g.ensureApp()
+
+	if err := g.app.Update(screen); err != nil {
+		return err
+	}
 
 	// Update the view based on the model.
 	for i, item := range g.items {

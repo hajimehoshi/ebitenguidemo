@@ -18,6 +18,11 @@ type App struct {
 	drawers []drawer
 }
 
+func (a *App) Update(screen *ebiten.Image) error {
+	// Do nothing so far.
+	return nil
+}
+
 func (a *App) Draw(screen *ebiten.Image) {
 	for _, d := range a.drawers {
 		d.Draw(screen)
