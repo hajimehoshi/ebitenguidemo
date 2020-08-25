@@ -5,7 +5,7 @@ package ebitenguidemo
 import (
 	"github.com/hajimehoshi/ebiten"
 
-	"github.com/hajimehoshi/ebitenguidemo/driver/js"
+	"github.com/hajimehoshi/ebitenguidemo/internal/driver/js"
 )
 
 func Run(app App) error {

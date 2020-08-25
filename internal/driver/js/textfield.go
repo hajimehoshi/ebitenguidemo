@@ -10,7 +10,7 @@ import (
 	"strings"
 	"syscall/js"
 
-	"github.com/hajimehoshi/ebitenguidemo/driver"
+	"github.com/hajimehoshi/ebitenguidemo/internal/driver"
 )
 
 var isSafari bool

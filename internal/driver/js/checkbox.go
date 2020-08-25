@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"syscall/js"
 
-	"github.com/hajimehoshi/ebitenguidemo/driver"
+	"github.com/hajimehoshi/ebitenguidemo/internal/driver"
 )
 
 type checkbox struct {

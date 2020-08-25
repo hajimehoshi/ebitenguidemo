@@ -5,7 +5,7 @@ package js
 import (
 	"image"
 
-	"github.com/hajimehoshi/ebitenguidemo/driver"
+	"github.com/hajimehoshi/ebitenguidemo/internal/driver"
 )
 
 type guiImpl struct {
