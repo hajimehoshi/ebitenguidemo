@@ -33,7 +33,6 @@ func (a *App) Update(screen *ebiten.Image) error {
 
 func (a *App) Draw(screen *ebiten.Image) {
 	a.app.Draw(screen)
-	a.gui.Draw(screen)
 }
 
 func (a *App) Layout(outsideWidth, outsideHeight int) (int, int) {

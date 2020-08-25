@@ -3,29 +3,15 @@
 package js
 
 import (
-	"bytes"
 	"fmt"
 	"image"
-	_ "image/png"
 	"runtime"
 	"strconv"
 	"strings"
 	"syscall/js"
 
-	"github.com/hajimehoshi/ebiten"
-
 	"github.com/hajimehoshi/ebitenguidemo/driver"
 )
-
-var textFieldImage *ebiten.Image
-
-func init() {
-	img, _, err := image.Decode(bytes.NewReader(textfield_png))
-	if err != nil {
-		panic(err)
-	}
-	textFieldImage, _ = ebiten.NewImageFromImage(img, ebiten.FilterDefault)
-}
 
 var isSafari bool
 
@@ -114,6 +100,10 @@ func (t *textField) Dispose() {
 	t.compositionend.Release()
 }
 
+func (t *textField) Bounds() image.Rectangle {
+	return t.bounds
+}
+
 func (t *textField) setBounds(bounds image.Rectangle) {
 	t.bounds = bounds
 
@@ -125,10 +115,6 @@ func (t *textField) setBounds(bounds image.Rectangle) {
 	t.v.Get("style").Set("top", fmt.Sprintf("%dpx", y+4))
 	t.v.Get("style").Set("width", fmt.Sprintf("%dpx", w-16))
 	t.v.Get("style").Set("height", fmt.Sprintf("%dpx", h-8))
-}
-
-func (t *textField) Draw(screen *ebiten.Image) {
-	drawNinePatch(screen, textFieldImage, t.bounds)
 }
 
 func (t *textField) Value() string {
@@ -172,6 +158,10 @@ func (n *numberField) Dispose() {
 
 	n.textField.Dispose()
 	n.textField = nil
+}
+
+func (n *numberField) Bounds() image.Rectangle {
+	return n.textField.Bounds()
 }
 
 func (n *numberField) Value() float64 {

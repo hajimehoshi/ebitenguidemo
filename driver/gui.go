@@ -15,6 +15,8 @@ type GUI interface {
 }
 
 type TextField interface {
+	Bounds() image.Rectangle
+
 	Value() string
 	SetValue(value string)
 
@@ -23,6 +25,8 @@ type TextField interface {
 }
 
 type NumberField interface {
+	Bounds() image.Rectangle
+
 	Value() float64
 	SetValue(value float64)
 
@@ -34,6 +38,8 @@ type Label interface {
 }
 
 type Checkbox interface {
+	Bounds() image.Rectangle
+
 	Checked() bool
 
 	SetOnChange(func(checkbox Checkbox))

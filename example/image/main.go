@@ -89,7 +89,7 @@ func (a *App) Draw(screen *ebiten.Image) {
 	screen.DrawImage(gophersImage, op)
 }
 
-func main() {	
+func main() {
 	if err := ebitenguidemo.Run(&App{}); err != nil {
 		panic(err)
 	}

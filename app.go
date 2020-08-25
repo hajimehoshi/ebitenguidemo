@@ -15,12 +15,15 @@ type App interface {
 
 type appWrapper struct {
 	app App
+	gui GUI
 }
 
 func (a *appWrapper) Update(gui driver.GUI) error {
-	return a.app.Update(&GUI{gui: gui})
+	a.gui.gui = gui
+	return a.app.Update(&a.gui)
 }
 
 func (a *appWrapper) Draw(screen *ebiten.Image) {
 	a.app.Draw(screen)
+	a.gui.draw(screen)
 }
